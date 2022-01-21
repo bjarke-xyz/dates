@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["dates.csproj", "dates/"]
 RUN dotnet restore "dates/dates.csproj"
-COPY . .
+COPY . ./dates
 WORKDIR "/src/dates"
 RUN dotnet build "dates.csproj" -c Release -o /app/build
 
