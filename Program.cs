@@ -18,10 +18,13 @@ app.UseSwaggerUI(c =>
     c.EnableTryItOutByDefault();
 });
 
+app.UseHttpLogging();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseHttpLogging();
 
 app.Run();
