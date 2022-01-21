@@ -20,7 +20,7 @@ public class OADateController : ControllerBase
         var oaDateStr = input?.OADate;
         if (string.IsNullOrWhiteSpace(oaDateStr))
         {
-            return BadRequest(new Response<double?, string?>(error: "Null or empty input"));
+            oaDateStr = DateTime.Now.ToOADate().ToString();
         }
         if (oaDateStr.Contains(","))
         {
@@ -41,11 +41,12 @@ public class OADateController : ControllerBase
     [HttpGet("to-oa-date")]
     public ActionResult<Response<DateTime?, double?>> ToOADate([FromQuery] DateInput input)
     {
-        if (input?.Date == null)
+        var date = input?.Date;
+        if (date == null)
         {
-            return BadRequest(new Response<DateTime?, double?>(error: "Null or empty input"));
+            date = DateTime.Now;
         }
-        return Ok(new Response<DateTime?, double?>(input.Date.Value, input.Date.Value.ToOADate()));
+        return Ok(new Response<DateTime?, double?>(date, date.Value.ToOADate()));
     }
 }
 

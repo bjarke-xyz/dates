@@ -10,7 +10,8 @@ async function onSubmitOaDate(event) {
   const form = event.target;
   const path = form.dataset.path;
   const formData = new FormData(form);
-  const elementsToDisable = [...form.querySelectorAll("input:not([disabled])"), ...form.querySelectorAll("button[type=submit]")]
+  const inputFields = form.querySelectorAll("input:not([disabled])")
+  const elementsToDisable = [...inputFields, ...form.querySelectorAll("button[type=submit]")]
   try {
     const urlSearchParams = new URLSearchParams(formData);
     setDisabled(elementsToDisable, true);
@@ -22,6 +23,9 @@ async function onSubmitOaDate(event) {
       outputField.value = error;
     } else {
       outputField.value = body.output;
+      if (!inputFields[0].value) {
+        inputFields[0].value = body.input;
+      }
     }
   } catch (error) {
     alert(error)
