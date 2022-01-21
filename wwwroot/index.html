@@ -17,11 +17,10 @@
     <details open>
       <summary><h2>OA Dates</h2></summary>
       <h3>From OA date</h3>
-      <form id="oaDates_FromOaDateForm" data-path="from-oa-date">
+      <form data-form="oadates" data-path="from-oa-date">
         <div class="form-group">
           <input placeholder="44582.83897428241" name="oaDate" />
           <input
-            id="oaDates_FromOaDateForm_output"
             placeholder="2022-01-21T20:08:07.3780000"
             name="output"
             disabled
@@ -31,15 +30,10 @@
       </form>
       <hr />
       <h3>To OA date</h3>
-      <form id="oaDates_ToOaDateForm" data-path="to-oa-date">
+      <form data-form="oadates" data-path="to-oa-date">
         <div class="form-group">
           <input placeholder="2022-01-21T20:08:07.3780000" name="date" />
-          <input
-            id="oaDates_ToOaDateForm_output"
-            placeholder="44582.83897428241"
-            name="output"
-            disabled
-          />
+          <input placeholder="44582.83897428241" name="output" disabled />
         </div>
         <button type="submit">Convert</button>
       </form>
@@ -47,6 +41,7 @@
       <p>
         An
         <a
+          target="_blank"
           href="https://docs.microsoft.com/en-us/dotnet/api/system.datetime.tooadate?view=net-6.0#remarks"
           >OLE Automation date
         </a>
@@ -63,6 +58,7 @@
         OLE Automation date is midnight, 1 January 0100. The maximum OLE
         Automation Date is the same as
         <a
+          target="_blank"
           href="https://docs.microsoft.com/en-us/dotnet/api/system.datetime.maxvalue?view=net-6.0"
           >DateTime.MaxValue</a
         >, the last moment of 31 December 9999.
