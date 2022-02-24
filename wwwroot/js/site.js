@@ -45,3 +45,68 @@ function setDisabled(nodeList, disabledStatus) {
     node.disabled = disabledStatus
   }
 }
+
+
+/**
+ * 
+ * @param {Dayjs} date 
+ * @returns {string} formatted date
+ */
+function formatDate(date) {
+  // const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  // const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+  // const padTime = (time) => {
+  //   return time.toString().padStart(2, "0")
+  // }
+  // const timeStr = `${padTime(date.)}:${padTime(date.getHours())}:${padTime(date.getSeconds())}`
+  // const str = `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${timeStr}`
+  const str = date.format("ddd DD MMM HH:mm:ss")
+  return str;
+}
+
+const nowElem = document.getElementById("now")
+
+/**
+ * 
+ * @param {Dayjs} date 
+ */
+function setDateValues(date) {
+    nowElem.setAttribute('data-isostring', date.toISOString());
+    const formattedDate = formatDate(date);
+    nowElem.innerText = formattedDate;
+    document.title = `Dates | ${formattedDate}`
+}
+
+function startDateSetter() {
+  return setInterval(() => {
+    const nowElemIsoString = nowElem.getAttribute('data-isostring');
+    const parsedDate = dayjs(nowElemIsoString);
+    const newDate = parsedDate.add(1, 'second');
+    setDateValues(newDate)
+  }, 1000);
+}
+
+
+let dateSetterInternval = null;
+
+async function getInitialDate() {
+  try {
+    const response = await fetch("/api/v1/datetime/utcnow");
+    const utcnow = (await response.json()).utcNow;
+    const parsedDate = dayjs(utcnow);
+
+    setDateValues(parsedDate);
+
+    if (dateSetterInternval) {
+      clearInterval(dateSetterInternval)
+    }
+    dateSetterInternval = startDateSetter();
+
+  } catch (error) {
+    console.log(`Could not get utcnow`, error);
+  }
+}
+getInitialDate();
+setInterval(() => {
+  getInitialDate();
+}, 10000)
