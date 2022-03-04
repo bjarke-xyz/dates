@@ -6,6 +6,15 @@ services:
       context: ./
     networks:
       - swarm-overlay
+    ports:
+      - "5288:80"
+
+  naturaldate:
+    image: registry.bjarke.xyz/naturaldate
+    build:
+      context: ./services/go-naturaldate
+    networks:
+      - swarm-overlay
 
 networks:
   swarm-overlay:

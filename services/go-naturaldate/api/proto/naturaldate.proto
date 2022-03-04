@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "github.com/bjarke-xyz/dates/naturaldate/api/proto";
+option csharp_namespace = "naturaldate";
+
+package api;
+
+import "google/protobuf/timestamp.proto";
+
+service NaturalDate {
+    rpc Parse(ParseNaturalDateRequest) returns (ParseNaturalDateResponse);
+}
+
+message ParseNaturalDateRequest {
+    string naturalDate = 1;
+    google.protobuf.Timestamp baseDate = 2;
+}
+
+message ParseNaturalDateResponse {
+    google.protobuf.Timestamp parsedDate = 1;
+}
