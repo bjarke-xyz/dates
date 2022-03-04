@@ -31,6 +31,7 @@ public class NaturalDateController : ControllerBase
             var parsedDate = response.ParsedDate.ToDateTime();
             var tzInfo = TimeZoneInfo.FindSystemTimeZoneById(timezone);
             parsedDate = parsedDate.Add(tzInfo.BaseUtcOffset);
+            DateTime.SpecifyKind(parsedDate, DateTimeKind.Local);
             return Ok(new Response<string, DateTime?>(input, parsedDate));
         }
         catch (Exception ex)
