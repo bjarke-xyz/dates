@@ -15,7 +15,7 @@ public class NaturalDateController : ControllerBase
     }
 
     [HttpGet("parse")]
-    public async Task<ActionResult<Response<string, DateTime?>>> Parse([FromQuery] string input, [FromQuery] string timezone)
+    public async Task<ActionResult<Response<string, DateTime?>>> Parse([FromQuery] string input)
     {
         if (string.IsNullOrEmpty(input)) return BadRequest();
 
@@ -29,9 +29,6 @@ public class NaturalDateController : ControllerBase
                 BaseDate = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTimeOffset(DateTimeOffset.Now),
             });
             var parsedDate = response.ParsedDate.ToDateTime();
-            var tzInfo = TimeZoneInfo.FindSystemTimeZoneById(timezone);
-            parsedDate = parsedDate.Add(tzInfo.BaseUtcOffset);
-            DateTime.SpecifyKind(parsedDate, DateTimeKind.Local);
             return Ok(new Response<string, DateTime?>(input, parsedDate));
         }
         catch (Exception ex)

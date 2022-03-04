@@ -1,23 +1,30 @@
+dayjs.extend(dayjs_plugin_utc);
+
 const baseUrl = "/api/v1";
 
-const oaDateForms = [...document.querySelectorAll("form[data-form=oadates]")]
+const oaDateForms = [...document.querySelectorAll("form[data-form=oadates]")];
 for (const form of oaDateForms) {
   form.onsubmit = onSubmitOaDate;
 }
 
 async function onSubmitOaDate(event) {
-  event.preventDefault()
+  event.preventDefault();
   const form = event.target;
   const path = form.dataset.path;
   const formData = new FormData(form);
-  const inputFields = form.querySelectorAll("input:not([disabled])")
-  const elementsToDisable = [...inputFields, ...form.querySelectorAll("button[type=submit]")]
+  const inputFields = form.querySelectorAll("input:not([disabled])");
+  const elementsToDisable = [
+    ...inputFields,
+    ...form.querySelectorAll("button[type=submit]"),
+  ];
   try {
     const urlSearchParams = new URLSearchParams(formData);
     setDisabled(elementsToDisable, true);
-    const response = await fetch(`${baseUrl}/oadate/${path}?${urlSearchParams}`);
+    const response = await fetch(
+      `${baseUrl}/oadate/${path}?${urlSearchParams}`
+    );
     const body = await response.json();
-    const outputField = form.querySelectorAll("input[name=output]")[0]
+    const outputField = form.querySelectorAll("input[name=output]")[0];
     if (!response.ok) {
       const error = body.error ?? Object.values(body.errors).join(" ");
       outputField.value = error;
@@ -28,14 +35,16 @@ async function onSubmitOaDate(event) {
       }
     }
   } catch (error) {
-    alert(error)
-    console.error(error)
+    alert(error);
+    console.error(error);
   } finally {
     setDisabled(elementsToDisable, false);
   }
 }
 
-const naturalDateForms = [...document.querySelectorAll("form[data-form=naturaldate]")]
+const naturalDateForms = [
+  ...document.querySelectorAll("form[data-form=naturaldate]"),
+];
 for (const form of naturalDateForms) {
   form.onsubmit = onSubmitNaturalDate;
 }
@@ -44,27 +53,33 @@ async function onSubmitNaturalDate(event) {
   const form = event.target;
   const path = form.dataset.path;
   const formData = new FormData(form);
-  const inputFields = form.querySelectorAll("input:not([disabled])")
-  const elementsToDisable = [...inputFields, ...form.querySelectorAll("button[type=submit]")]
+  const inputFields = form.querySelectorAll("input:not([disabled])");
+  const elementsToDisable = [
+    ...inputFields,
+    ...form.querySelectorAll("button[type=submit]"),
+  ];
   try {
     const urlSearchParams = new URLSearchParams(formData);
-    urlSearchParams.set('timezone', Intl.DateTimeFormat().resolvedOptions().timeZone);
     setDisabled(elementsToDisable, true);
-    const response = await fetch(`${baseUrl}/naturaldate/${path}?${urlSearchParams}`);
+    const response = await fetch(
+      `${baseUrl}/naturaldate/${path}?${urlSearchParams}`
+    );
     const body = await response.json();
-    const outputField = form.querySelectorAll("input[name=output]")[0]
+    const outputField = form.querySelectorAll("input[name=output]")[0];
     if (!response.ok) {
       const error = body.error ?? Object.values(body.errors).join(" ");
       outputField.value = error;
     } else {
-      outputField.value = body.output;
+      const parsedDate = dayjs.utc(body.output)
+      console.log(parsedDate)
+      outputField.value = parsedDate.local().format();
       if (!inputFields[0].value) {
         inputFields[0].value = body.input;
       }
     }
   } catch (error) {
-    alert(error)
-    console.error(error)
+    alert(error);
+    console.error(error);
   } finally {
     setDisabled(elementsToDisable, false);
   }
@@ -89,25 +104,22 @@ async function onSubmitNaturalDate(event) {
   // } finally {
   //   setDisabled(elementsToDisable, false);
   // }
-
-
 }
 
 /**
- * 
- * @param {NodeList} nodeList 
- * @param {bool} disabledStatus 
+ *
+ * @param {NodeList} nodeList
+ * @param {bool} disabledStatus
  */
 function setDisabled(nodeList, disabledStatus) {
   for (const node of nodeList) {
-    node.disabled = disabledStatus
+    node.disabled = disabledStatus;
   }
 }
 
-
 /**
- * 
- * @param {Dayjs} date 
+ *
+ * @param {Dayjs} date
  * @returns {string} formatted date
  */
 function formatDate(date) {
@@ -118,32 +130,31 @@ function formatDate(date) {
   // }
   // const timeStr = `${padTime(date.)}:${padTime(date.getHours())}:${padTime(date.getSeconds())}`
   // const str = `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${timeStr}`
-  const str = date.format("ddd DD MMM HH:mm:ss")
+  const str = date.format("ddd DD MMM HH:mm:ss");
   return str;
 }
 
-const nowElem = document.getElementById("now")
+const nowElem = document.getElementById("now");
 
 /**
- * 
- * @param {Dayjs} date 
+ *
+ * @param {Dayjs} date
  */
 function setDateValues(date) {
-    nowElem.setAttribute('data-isostring', date.toISOString());
-    const formattedDate = formatDate(date);
-    nowElem.innerText = formattedDate;
-    document.title = `Dates | ${formattedDate}`
+  nowElem.setAttribute("data-isostring", date.toISOString());
+  const formattedDate = formatDate(date);
+  nowElem.innerText = formattedDate;
+  document.title = `Dates | ${formattedDate}`;
 }
 
 function startDateSetter() {
   return setInterval(() => {
-    const nowElemIsoString = nowElem.getAttribute('data-isostring');
+    const nowElemIsoString = nowElem.getAttribute("data-isostring");
     const parsedDate = dayjs(nowElemIsoString);
-    const newDate = parsedDate.add(1, 'second');
-    setDateValues(newDate)
+    const newDate = parsedDate.add(1, "second");
+    setDateValues(newDate);
   }, 1000);
 }
-
 
 let dateSetterInternval = null;
 
@@ -156,10 +167,9 @@ async function getInitialDate() {
     setDateValues(parsedDate);
 
     if (dateSetterInternval) {
-      clearInterval(dateSetterInternval)
+      clearInterval(dateSetterInternval);
     }
     dateSetterInternval = startDateSetter();
-
   } catch (error) {
     console.log(`Could not get utcnow`, error);
   }
@@ -167,4 +177,4 @@ async function getInitialDate() {
 getInitialDate();
 setInterval(() => {
   getInitialDate();
-}, 10000)
+}, 10000);
