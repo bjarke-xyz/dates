@@ -20,6 +20,7 @@ function App() {
 
   useEffect(() => {
     setCurrentTimeFormatted(formatTime(currentTime));
+    document.title = `Dates | ${formatTime(currentTime)}`;
   }, [currentTime]);
 
   useEffect(() => {
